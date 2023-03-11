@@ -10,6 +10,7 @@ def transform_data(data):
     accepted_varieties = ['White Wine', 'Red Wine']
     min_rating = 90
     max_rating = 92
+    data = data[data.columns[1:]]
 
     for row in range(len(data)):
         wrong_variety = data['variety'][row] not in accepted_varieties
@@ -20,12 +21,13 @@ def transform_data(data):
     return data
 
 
-def serialize_json(path):
-    with open(path, encoding="utf8") as f:
-        data = json.load(f)
-        return data
+def serialize_json(data):
+    result = data.to_json(orient='split')
+    parsed = json.loads(result)
+    with open("output.json", "w") as outfile:
+        json.dump(parsed, outfile)
 
 
 data = load_csv('sample_data/wine-ratings-small.csv')
 data = transform_data(data)
-print(data)
+serialize_json(data)
